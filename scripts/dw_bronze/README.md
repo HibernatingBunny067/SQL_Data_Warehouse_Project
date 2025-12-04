@@ -3,4 +3,4 @@
 - MySQL server doesn't handle NULLs (unlike MSSQL) so we added custom NULL checks in loading script
 
 ## DATA Flow Map
-![flow map](docs/dw_bronze_map.png)
+![flow map](SQL_Data_Warehouse_Project/docs/dw_bronze_map.png)
