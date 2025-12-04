@@ -1,3 +1,16 @@
+/*
+===========================
+Creating Tables in dw_bronze database 
+===========================
+Script Purpose:
+	This script initializes 6 new tables in the dw_bronze database for raw inputting of all the data.
+
+WARNING:
+	This script was made keeping in mind that it'll be run once before starting the project, running it after you have 
+    added data in the table will lead to data loss as this script drops the tables if they already exists in the 
+    dw_bronze database
+*/
+
 USE dw_bronze;
 
 DROP TABLE IF EXISTS crm_cust_info;
