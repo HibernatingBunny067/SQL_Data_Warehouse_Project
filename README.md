@@ -3,6 +3,6 @@
 - a data warehouse is subject oriented, integrated time-variant and non-volatile collection of data in support of management’s decision making process
 
 ## Data Warehouse Architecture
-- This project follows a Medallion type data warehouse with three intermediate layers and two input/output layers (diagram attached below)
+- This project follows a **Medallion** Type data warehouse with three intermediate layers and two input/output layers (diagram attached below)
 
 ![design architecture](docs/design.png)
