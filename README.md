@@ -5,4 +5,4 @@
 ## Data Warehouse Architecture
 - This project follows a Medallion type data warehouse with three intermediate layers and two input/output layers (diagram attached below)
 
-![design architecture](docs/Data Warehouse Project.drawio.png)
+![design architecture](docs/design.png)
