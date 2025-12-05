@@ -10,3 +10,6 @@ WARNING:
 
 -- Run once per session in the server, allows for importing data from local to the locally run sql server directly
 SET GLOBAL local_infile = 1;
+
+-- Run once per session in the server, allows for simple substitution with manual logic checks for NULLS
+SET sql_mode = 'NO_ENGINE_SUBSTITUTION';
