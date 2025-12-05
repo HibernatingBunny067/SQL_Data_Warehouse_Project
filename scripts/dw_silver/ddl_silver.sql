@@ -3,8 +3,7 @@
 Creating Tables in dw_silver database 
 ===========================
 Script Purpose:
-	- This script initializes 6 new tables in the dw_bronze database for receiving data from the dw_bronze tables
-  - adding current timestamp column for auditing the retrieval of data from bronze layer
+	This script initializes 6 new tables in the dw_bronze database for receiving data from the dw_bronze tables
 
 WARNING:
 	This script was made keeping in mind that it'll be run once before starting the project, running it after you have 
@@ -31,12 +30,13 @@ CREATE TABLE crm_cust_info(
 DROP TABLE IF EXISTS crm_prd_info;
 CREATE TABLE crm_prd_info(
 	prd_id INT,
+    cat_id VARCHAR(50), -- added this column
     prd_key VARCHAR(50),
     prd_nm VARCHAR(50),
     prd_cost INT,
     prd_line VARCHAR(50),
-    prd_start_dt DATETIME,
-    prd_end_dt DATETIME,
+    prd_start_dt DATE, -- changed the data type
+    prd_end_dt DATE, --  here as well
     dwh_create_date DATETIME DEFAULT CURRENT_TIMESTAMP);
 
 DROP TABLE IF EXISTS crm_sales_details;
@@ -44,9 +44,9 @@ CREATE TABLE crm_sales_details(
 	sls_ord_num VARCHAR(50),
     sls_prd_key VARCHAR(50),
     sls_cust_id INT,
-    sls_order_dt INT,
-    sls_ship_dt INT,
-    sls_due_dt INT,
+    sls_order_dt DATE,
+    sls_ship_dt DATE,
+    sls_due_dt DATE,
     sls_sales INT,
     sls_quantity INT,
     sls_price INT,
