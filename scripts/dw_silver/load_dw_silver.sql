@@ -78,7 +78,16 @@ CAST(prd_start_dt AS DATE) AS prd_start_dt,
 CAST(COALESCE(DATE_SUB(LEAD(prd_start_dt) OVER (PARTITION BY prd_key ORDER BY prd_start_dt),INTERVAL 1 DAY),NULL) AS DATE) AS prd_end_dt
 FROM dw_bronze.crm_prd_info;
 -- Inserting Third Table
-INSERT INTO dw_silver.crm_sales_details
+INSERT INTO dw_silver.crm_sales_details(
+	sls_ord_num,
+	sls_prd_key,
+	sls_cust_id,
+    sls_order_dt,
+    sls_ship_dt,
+    sls_due_dt,
+    sls_sales,
+    sls_price
+)
 SELECT 
 sls_ord_num,
 sls_prd_key,
@@ -103,5 +112,41 @@ CASE WHEN sls_price IS NULL OR sls_price <= 0
 	ELSE sls_price 
 END AS sls_price
 FROM dw_bronze.crm_sales_details;
+-- Inserting into ERP Table 1
+SELECT '>> dw_silver.erp_cust_az12';
+INSERT INTO dw_silver.erp_cust_az12(
+	cid,
+    bdate,
+    gen
+)
+SELECT 
+CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid,4,LENGTH(cid))
+	ELSE cid
+END AS cid,
+CASE WHEN bdate > CURRENT_DATE() THEN NULL
+	ELSE bdate
+END AS bdate,
+CASE WHEN UPPER(REGEXP_REPLACE(gen, '[[:space:]]+', '')) IN ('F','FEMALE') THEN 'Female' -- there were some empty space and special characters inside the gender column
+	WHEN UPPER(REGEXP_REPLACE(gen, '[[:space:]]+', '')) IN ('M','MALE') THEN 'Male' -- removed using regular expression
+	ELSE 'n/a'
+END AS gen
+FROM dw_bronze.erp_cust_az12;
+-- Inserting into ERP Table 2
+SELECT '>> dw_silver.erp_loc_a101';
+INSERT INTO dw_silver.erp_los_a101(
+	cid,
+    cntry
+)
+SELECT
+REPLACE(cid,'-','') cid,
+CASE WHEN REGEXP_REPLACE(cntry, '[[:space:]]+', '')='DE' THEN 'Germany'
+	WHEN REGEXP_REPLACE(cntry, '[[:space:]]+', '') IN ('US','USA') THEN 'United States'
+    WHEN REGEXP_REPLACE(cntry, '[[:space:]]+', '') = '' OR cntry IS NULL THEN 'n/a'
+    ELSE TRIM(cntry)
+END AS cntry
+FROM dw_bronze.erp_loc_a101;
+-- Inserting into ERP table 3
+SELECT '>> dw_silver.erp_px_cat_g1v2';
+
 END //
 DELIMITER ;
