@@ -6,15 +6,19 @@ Usage:
 	CALL load_dw_silver();
 Purpose:
 	- creates a stored procedure to automated the data checks and loading into dw_silver table 
-
+	- loading is based on truncation, so one can run it more than once without duplicates
+	- this script needs sql_mode set to No_substituion which maybe done with config sql file, running once per session
+	- all the transformations are listed and highlighted with comments
 */
 
+use dw_silver;
 DROP PROCEDURE IF EXISTS load_dw_silver;
 DELIMITER //
 CREATE PROCEDURE load_dw_silver()
 BEGIN
 -- Inserting first Tables
 SELECT '>> dw_silver.crm_cust_info';
+TRUNCATE TABLE dw_silver.crm_cust_info;
 INSERT INTO dw_silver.crm_cust_info(
 	cst_id,
     cst_key,
@@ -23,7 +27,7 @@ INSERT INTO dw_silver.crm_cust_info(
     cst_marital_status,
     cst_gender,
     cst_create_date
-) -- Inserting into the dw_silver table
+) 
 SELECT
 cst_id,
 cst_key,
@@ -38,7 +42,7 @@ CASE WHEN UPPER(TRIM(cst_gender))= 'F' THEN 'Female'
     ELSE 'n/a'
 END cst_gender, -- for male/female
 CASE WHEN cst_create_date IS NULL THEN NULL
-	WHEN cst_create_date = CAST('0000-00-00' AS DATE) THEN NULL -- <--- Catch the Zero Date explicitly
+	WHEN cst_create_date = '0000-00-00' THEN NULL -- <--- Catch the Zero Date explicitly
 	ELSE CAST(cst_create_date AS DATE) 
 END cst_create_date
 FROM
@@ -51,6 +55,7 @@ WHERE cst_id IS NOT NULL)t
 WHERE flag_last = 1; -- for duplicated cst_id (customer_id)
 -- Inserting Second table
 SELECT '>> dw_silver.crm_prd_info';
+TRUNCATE TABLE dw_silver.crm_prd_info;
 INSERT INTO dw_silver.crm_prd_info(
 	prd_id,
     cat_id,
@@ -78,6 +83,7 @@ CAST(prd_start_dt AS DATE) AS prd_start_dt,
 CAST(COALESCE(DATE_SUB(LEAD(prd_start_dt) OVER (PARTITION BY prd_key ORDER BY prd_start_dt),INTERVAL 1 DAY),NULL) AS DATE) AS prd_end_dt
 FROM dw_bronze.crm_prd_info;
 -- Inserting Third Table
+TRUNCATE TABLE dw_silver.crm_sales_details;
 INSERT INTO dw_silver.crm_sales_details(
 	sls_ord_num,
 	sls_prd_key,
@@ -114,6 +120,7 @@ END AS sls_price
 FROM dw_bronze.crm_sales_details;
 -- Inserting into ERP Table 1
 SELECT '>> dw_silver.erp_cust_az12';
+TRUNCATE TABLE dw_silver.erp_cust_az12;
 INSERT INTO dw_silver.erp_cust_az12(
 	cid,
     bdate,
@@ -133,7 +140,8 @@ END AS gen
 FROM dw_bronze.erp_cust_az12;
 -- Inserting into ERP Table 2
 SELECT '>> dw_silver.erp_loc_a101';
-INSERT INTO dw_silver.erp_los_a101(
+TRUNCATE TABLE dw_silver.erp_loc_a101;
+INSERT INTO dw_silver.erp_loc_a101(
 	cid,
     cntry
 )
@@ -146,7 +154,19 @@ CASE WHEN REGEXP_REPLACE(cntry, '[[:space:]]+', '')='DE' THEN 'Germany'
 END AS cntry
 FROM dw_bronze.erp_loc_a101;
 -- Inserting into ERP table 3
+TRUNCATE TABLE dw_silver.erp_px_cat_g1v2;
 SELECT '>> dw_silver.erp_px_cat_g1v2';
-
+INSERT INTO dw_silver.erp_px_cat_g1v2(
+	id,
+    cat,
+    subcat,
+    maintenance
+)
+SELECT 
+id,
+cat,
+subcat,
+maintenance
+FROM dw_bronze.erp_px_cat_g1v2;
 END //
 DELIMITER ;
