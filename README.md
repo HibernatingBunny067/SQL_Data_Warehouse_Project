@@ -57,6 +57,9 @@ The Gold layer is modeled as a **Star Schema** to enable fast querying for BI to
 ---
 
 ## 📂 Project Structure
+---
+
+## 📂 Project Structure
 
 ```text
 /SQL_Data_Warehouse_Project
@@ -66,7 +69,18 @@ The Gold layer is modeled as a **Star Schema** to enable fast querying for BI to
 │
 ├── /scripts
 │   ├── /dw_bronze          # DDL and Load Scripts for Raw Layer
+│   │   ├── ddl_bronze.sql
+│   │   └── load_bronze.sql
+│   │
 │   ├── /dw_silver          # Stored Procedures for Transformation
-│   └── /dw_gold            # Reporting Views and Dimensions
+│   │   ├── ddl_silver.sql
+│   │   └── load_dw_silver.sql
+│   │
+│   ├── /dw_gold            # Reporting Views and Dimensions
+│   │   ├── gold_fact_sales.sql
+│   │   └── gold_dim_customer.sql
+│   │
+│   └── init_database.sql   # Setup script for schemas
 │
 └── README.md
+```
