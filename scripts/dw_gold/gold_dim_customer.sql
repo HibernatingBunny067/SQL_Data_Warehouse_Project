@@ -15,6 +15,11 @@ some data from crm_system is not present in the erp tables
 3. Giving friendly names
 4. making new surrogate key with '_key' at the end
 5. finally creating a view
+
+CAUTION:
+- every successive run of this query drops the existing view and creates another one
+- since views don't contain data per se, one can technically run this indefinite time and just select from this view when 
+  one wishes to access the data
 */
 
 use dw_gold;
