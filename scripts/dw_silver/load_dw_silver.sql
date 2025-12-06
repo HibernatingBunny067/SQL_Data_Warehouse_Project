@@ -42,7 +42,7 @@ CASE WHEN UPPER(TRIM(cst_gender))= 'F' THEN 'Female'
     ELSE 'n/a'
 END cst_gender, -- for male/female
 CASE WHEN cst_create_date IS NULL THEN NULL
-	WHEN cst_create_date = '0000-00-00' THEN NULL -- <--- Catch the Zero Date explicitly
+	WHEN cst_create_date = CAST('0000-00-00' AS DATE)  THEN NULL -- <--- Catch the Zero Date explicitly
 	ELSE CAST(cst_create_date AS DATE) 
 END cst_create_date
 FROM
@@ -150,10 +150,10 @@ INSERT INTO dw_silver.erp_loc_a101(
 )
 SELECT
 REPLACE(cid,'-','') cid,
-CASE WHEN REGEXP_REPLACE(cntry, '[[:space:]]+', '')='DE' THEN 'Germany'
-	WHEN REGEXP_REPLACE(cntry, '[[:space:]]+', '') IN ('US','USA') THEN 'United States'
-    WHEN REGEXP_REPLACE(cntry, '[[:space:]]+', '') = '' OR cntry IS NULL THEN 'n/a'
-    ELSE TRIM(cntry)
+CASE WHEN REGEXP_REPLACE(cntry, '[[:space:]]+', '') = 'DE' THEN 'Germany'
+        WHEN REGEXP_REPLACE(cntry, '[[:space:]]+', '') IN ('US', 'USA') THEN 'United States'
+        WHEN cntry IS NULL OR REGEXP_REPLACE(cntry, '[[:space:]]+', '') = '' THEN 'n/a'
+        ELSE TRIM(REGEXP_REPLACE(cntry, '[[:cntrl:]]', ''))
 END AS cntry
 FROM dw_bronze.erp_loc_a101;
 -- Inserting into ERP table 3
