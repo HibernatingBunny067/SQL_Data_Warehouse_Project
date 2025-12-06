@@ -6,7 +6,6 @@ Purpose:
   - run this script to get the tables and there corresponding rows from the bronze layer
 */
 
-USE dw_bronze;
 SELECT 'crm_cust_info' AS Table_Name, COUNT(*) AS Total_Rows FROM dw_bronze.crm_cust_info
 UNION ALL
 SELECT 'crm_prd_info', COUNT(*) FROM dw_bronze.crm_prd_info
