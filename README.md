@@ -4,26 +4,36 @@
 
 ---
 
-## 🏗️ Architecture Overview
+## 🏗️ Architecture & Data Flow
 
-This project implements a **Medallion Architecture**, a best-practice design pattern in modern data engineering that organizes data quality into three distinct layers.
+This project implements a **Medallion Architecture**, organizing data quality into three distinct layers.
 
-![Data Warehouse Architecture](docs/design.png)
+![Data Flow Diagram](docs/Data_Flow_Diagram.drawio.png)
 
-### The Three Layers
+### The ETL Pipeline
+The data flows from raw CSVs through a series of transformations to become analytics-ready.
+
 | Layer | Name | Description |
 | :--- | :--- | :--- |
 | 🥉 | **Bronze Layer** | **Raw Ingestion.** Direct dump of source CSV files (CRM & ERP). Handles basic ingestion issues (e.g., converting empty CSV fields to `NULL`) but preserves the original data fidelity. |
 | 🥈 | **Silver Layer** | **Cleansed & Conformed.** Applies data quality rules. Handles deduplication, standardizes text (e.g., Gender M/F -> Male/Female), cleans invalid dates (Zero-Dates), and ensures referential integrity. |
-| 🥇 | **Gold Layer** | **Business Aggregates.** Optimized for reporting. This layer uses **Star Schemas** (Fact & Dimension tables) to answer specific business questions like "Sales by Quarter" or "Customer Lifetime Value." |
+| 🥇 | **Gold Layer** | **Business Aggregates.** Optimized for reporting. This layer uses **Star Schemas** (Fact & Dimension tables) to answer specific business questions. |
 
 ---
 
-## 🛠️ Tech Stack & Tools
-* **Database:** MySQL 8.0
-* **ETL Engine:** Native SQL Scripts & Stored Procedures
-* **Data Modeling:** Star Schema, Normalization (3NF) for Silver
-* **Version Control:** Git & GitHub
+## 📐 Data Modeling
+
+### 1. Bronze Layer (Source Mapping)
+The Bronze layer acts as a direct landing zone for the raw CSV files.
+![Bronze Map](docs/dw_bronze_map.png)
+
+### 2. Silver Layer (Integration Model)
+In the Silver layer, data from the disparate CRM and ERP systems is merged, cleaned, and normalized.
+![Integration Model](docs/integration_model.drawio.png)
+
+### 3. Gold Layer (Dimensional Model / Star Schema)
+The Gold layer is modeled as a **Star Schema** to enable fast querying for BI tools. It consists of Fact tables (Sales) surrounded by Dimension tables (Products, Customers).
+![Data Mart Design](docs/DataMart.drawio.png)
 
 ---
 
