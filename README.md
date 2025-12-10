@@ -54,13 +54,13 @@ The Gold layer is modeled as a **Star Schema** to enable fast querying for BI to
 * Designed a **Fact-Dimension Model** to facilitate fast analytical queries.
 * Created aggregated views for key metrics (Sales Velocity, Churn Rate, Product Performance).
 
+### 4. Detailed Analysis
+* Created two views for customer and product analysis from the dw_gold layer
+* used advanced sql concepts like ctes, subqueries, window functions to aggregate and present data 
 ---
 
 ## 📂 Project Structure
 ---
-
-## 📂 Project Structure
-
 ```text
 /SQL_Data_Warehouse_Project
 │
@@ -76,10 +76,11 @@ The Gold layer is modeled as a **Star Schema** to enable fast querying for BI to
 │   │   ├── ddl_silver.sql
 │   │   └── load_dw_silver.sql
 │   │
-│   ├── /dw_gold            # Reporting Views and Dimensions
-│   │   ├── gold_fact_sales.sql
-│   │   └── gold_dim_customer.sql
-│   │
+│   │── /analysis           # Contains detailed analysis of the final layer with 2 separate reports about the products and customers
+│   │  
+│   │── /eda             #exploration of the gold layer
+│   │   ├── eda_dim_dw_gold.sql
+│   │   └── overview_db.sql
 │   └── init_database.sql   # Setup script for schemas
 │
 └── README.md
