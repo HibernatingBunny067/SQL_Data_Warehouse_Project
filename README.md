@@ -81,6 +81,7 @@ The Gold layer is modeled as a **Star Schema** to enable fast querying for BI to
 │   │── /eda             #exploration of the gold layer
 │   │   ├── eda_dim_dw_gold.sql
 │   │   └── overview_db.sql
+|   |
 │   └── init_database.sql   # Setup script for schemas
 │
 └── README.md
